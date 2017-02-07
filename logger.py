@@ -18,17 +18,17 @@ usbscale = serial.Serial('/dev/usbscale',
                       rtscts=0
                       )
 
-probetrans = minimalmodbus.Instrument('/dev/ttyUSB0', 1)
+probetrans = minimalmodbus.Instrument('/dev/probetrans', 1)
 probetrans.serial.baudrate = 9600
 probetrans.serial.timeout = 1.0
 
-myfile = datetime.datetime.today().isoformat()[:16]
+myfile = "{}.log".format(datetime.datetime.today().isoformat()[:16])
 
 while True:
     usbscale.write("*P".encode('utf8'))
     time.sleep(0.1)
     u = usbscale.readline().decode('utf8').split()[-1]
-    if (u == myuints):
+    if (u == myunits):
         break
     time.sleep(0.1)
     usbscale.write("*C".encode('utf8'))
