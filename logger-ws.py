@@ -22,8 +22,13 @@ usbscale = serial.Serial('/dev/usbscale',
 """
 
 def scale_getweight():
-    myproc = subprocess.run(["printreq"], stdout=subprocess.PIPE)
-    return myproc.stdout.decode('utf8').strip()
+    myval = ''
+    myproc = subprocess.Popen(["printreq"], stdout=subprocess.PIPE)
+    try:
+        myval = myproc.communicate(timeout=1)[0].decode('utf8').strip()
+    except:
+        pass
+    return myval
 
 def scale_changeunits():
     time.sleep(1)
@@ -80,10 +85,11 @@ with open(myfile,'a') as mylog:
 
         except:
             pass;
-
         myline = "{:.2f},{!s},{:0.2},{!s},{!s}\n".format(ts,val_temp,val_do,val_scale,val_relay[0])
-        mylog.write(myline)
-        mylog.flush()
         print(myline, end='')
+
+        if len(val_scale) != 0:
+            mylog.write(myline)
+            mylog.flush()
         time.sleep(mydelay)
 
